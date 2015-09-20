@@ -25,37 +25,40 @@ public class RedSemaforica {
      */
     public static void main(String[] args) {
         ExecutorService executorRedSemaforica = Executors.newFixedThreadPool(30);
-        // TODO code application logic here
         ArrayList semaforos = new ArrayList();
-        
-        
-        
-        int r_v;
-        int r_r;
+
+        int c1;
+        int c2;
+        int c3;
         Random r = new Random();
-        for (int i=0; i<10; i++){
-            r_v= r.nextInt(10-1+1)+1;
-            r_r= r.nextInt(10-1+1)+1;
-//            Runnable controlador = new Semaforo(Integer.toString(i), false, r_r, r_v);
+        for (int i = 0; i < 10; i++) {
+            c1 = r.nextInt(10 - 1 + 1) + 1;
+            c2 = r.nextInt(10 - 1 + 1) + 1;
+            c3 = r.nextInt(10 - 1 + 1) + 1;
+//            Runnable controlador = new Interseccion(Integer.toString(i), false, c2, c1);
 //            executorRedSemaforica.execute (controlador);
-            Semaforo s = new Semaforo(Integer.toString(i), false, r_r, r_v);
+            Interseccion s = new Interseccion(Integer.toString(i), false, c1, c2, c3);
             semaforos.add(s);
-            executorRedSemaforica.execute((Runnable)semaforos.get(i));
+            executorRedSemaforica.execute((Runnable) semaforos.get(i));
         }
         executorRedSemaforica.shutdown();
-        Semaforo aux;
-        while(true){
-            System.out.println("");System.out.println("");System.out.println("");
-            for (int j=0; j<10; j++){
-                aux = (Semaforo)semaforos.get(j);
-                System.out.println ("Semaforo "+ aux.getName() +"("+aux.isEstado()+"):"+aux.getContador());
+        Interseccion aux;
+        while (true) {
+            System.out.println("");
+            System.out.println("");
+            System.out.println("");
+            for (int j = 0; j < 10; j++) {
+                aux = (Interseccion) semaforos.get(j);
+                System.out.println("Semaforo " + aux.getName() + "(" + aux.isB() + "):" + aux.getContador());
+
             }
-            
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(RedSemaforica.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        
-        
-        
+
     }
 
-    
 }
