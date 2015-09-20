@@ -6,6 +6,7 @@
 package redsemaforica;
 
 import static java.lang.Math.random;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -25,8 +26,8 @@ public class RedSemaforica {
     public static void main(String[] args) {
         ExecutorService executorRedSemaforica = Executors.newFixedThreadPool(30);
         // TODO code application logic here
+        ArrayList semaforos = new ArrayList();
         
-        ExecutorService executorSimulador = Executors.newFixedThreadPool(10);
         
         
         int r_v;
@@ -35,10 +36,22 @@ public class RedSemaforica {
         for (int i=0; i<10; i++){
             r_v= r.nextInt(10-1+1)+1;
             r_r= r.nextInt(10-1+1)+1;
-            Runnable controlador = new Semaforo(Integer.toString(i), false, r_r, r_v);
-            executorRedSemaforica.execute (controlador);
+//            Runnable controlador = new Semaforo(Integer.toString(i), false, r_r, r_v);
+//            executorRedSemaforica.execute (controlador);
+            Semaforo s = new Semaforo(Integer.toString(i), false, r_r, r_v);
+            semaforos.add(s);
+            executorRedSemaforica.execute((Runnable)semaforos.get(i));
         }
         executorRedSemaforica.shutdown();
+        Semaforo aux;
+        while(true){
+            System.out.println("");System.out.println("");System.out.println("");
+            for (int j=0; j<10; j++){
+                aux = (Semaforo)semaforos.get(j);
+                System.out.println ("Semaforo "+ aux.getName() +"("+aux.isEstado()+"):"+aux.getContador());
+            }
+            
+        }
         
         
         

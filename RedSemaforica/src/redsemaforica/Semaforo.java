@@ -18,6 +18,8 @@ public class Semaforo implements Runnable {
     private boolean estado; //verde = 1; R  rojo =0;
     private int t_rojo;
     private int t_verde;
+    
+    private int contador;
 
     public Semaforo(String name, boolean estado, int t_rojo, int t_verde) {
         this.name = name;
@@ -29,12 +31,12 @@ public class Semaforo implements Runnable {
     @Override
     public void run() {
 
-        int counter;
         while (true) {
 
-            counter = estado ? t_verde : t_rojo;
-            while (counter >= 0) {
-                System.out.println(name + "(" + estado + "):" + counter--);
+            contador = estado ? t_verde : t_rojo;
+            while (contador >= 0) {
+//                System.out.println(name + "(" + estado + "):" + contador--);
+                contador--;
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException ex) {
@@ -46,5 +48,48 @@ public class Semaforo implements Runnable {
         }
 
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isEstado() {
+        return estado;
+    }
+
+    public void setEstado(boolean estado) {
+        this.estado = estado;
+    }
+
+    public int getT_rojo() {
+        return t_rojo;
+    }
+
+    public void setT_rojo(int t_rojo) {
+        this.t_rojo = t_rojo;
+    }
+
+    public int getT_verde() {
+        return t_verde;
+    }
+
+    public void setT_verde(int t_verde) {
+        this.t_verde = t_verde;
+    }
+
+    public int getContador() {
+        return contador;
+    }
+
+    public void setContador(int contador) {
+        this.contador = contador;
+    }
+    
+    
+    
 
 }
