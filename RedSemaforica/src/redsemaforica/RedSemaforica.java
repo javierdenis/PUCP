@@ -54,7 +54,7 @@ public class RedSemaforica implements Interface{
             System.out.println("");
             for (int j = 0; j < 10; j++) {
                 aux = (Interseccion) semaforos.get(j);
-//                System.out.println("Semaforo " + aux.getName() + "(" + aux.isB() + "):" + aux.getContador());
+                System.out.println("Semaforo " + aux.getName() + "(" + aux.isB() + "):" + aux.getContador());
             }
             try {
                 Thread.sleep(1000);
