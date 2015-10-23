@@ -31,7 +31,7 @@ public class SimuladorTrafico {
         hi=mi=si=0;
         String cadenaEntrada;
         Scanner sc = new Scanner(System.in);
-        System.out.print("Introduzca la hora de inicio de la simulacion (hh:mm:ss). Ejemplo: 08:30:00");
+        System.out.println("Introduzca la hora de inicio de la simulacion (hh:mm:ss). Ejemplo: 08:30:00");
         //cadenaEntrada = sc.nextLine();
         cadenaEntrada = "10:08:23";
         StringTokenizer tokens = new StringTokenizer(cadenaEntrada,":");
@@ -40,7 +40,7 @@ public class SimuladorTrafico {
             mi=Integer.parseInt(tokens.nextToken());
             si=Integer.parseInt(tokens.nextToken());
         }
-        System.out.print("Introduzca la cantidad de minutos de la simulacion. Ejemplo: 15");        
+        System.out.println("Introduzca la cantidad de minutos de la simulacion. Ejemplo: 15");        
         //String nombreArchivo = GetFechaYHora();
         String nombreArchivo = GetFecha()+"."+hi+"."+mi+"."+si;
         ImprimirSimulacion(nombreArchivo);
@@ -73,10 +73,10 @@ public class SimuladorTrafico {
             escritor = new FileWriter(archivo);
             PrintWriter p = new PrintWriter(escritor);
             for (int j = 0; j < 100; j++) {
-                p.println("*******************************************");
-                p.println("10:" + "20" + ":" + j * 10 + ":");
+                p.println("*********************************");
+                p.println("10:" + "20" + ":" + j * 10 );
                 for (int i = 0; i < 10; i++) {
-                    p.println("M" + i + ":(10,20)(10,20)(10,20)(10,20)");
+                    p.println("M0" + i + ":(NV,VP)(NV,VP)(NV,VP)(NV,VP)");
                 }
             }
             escritor.close();
