@@ -36,9 +36,7 @@ public class Interseccion implements Runnable {
 
     @Override
     public void run() {
-
         while (true) {
-
             contador = b ? c2 : c1;
             while (contador >= 0) {
                 contador--;
@@ -57,44 +55,31 @@ public class Interseccion implements Runnable {
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
-
     public boolean isB() {
         return b;
     }
-
     public void setB(boolean b) {
         this.b = b;
     }
-
     public int getC1() {
         return c1;
     }
-
     public void setC1(int c1) {
         this.c1 = c1;
     }
-
     public int getC2() {
         return c2;
     }
-
     public void setC2(int c2) {
         this.c2 = c2;
     }
-
     public int getContador() {
         return contador;
     }
-
     public void setContador(int contador) {
         this.contador = contador;
     }
-    
-    
-    
-
 }

@@ -22,67 +22,18 @@ import java.util.logging.Logger;
  *
  * @author javier
  */
-public class RedSemaforica implements Interface{
+public class RedSemaforica implements Interface {
+
+    static Integer numIntersecciones = 10;
+    static ArrayList intersecciones;
 
     /**
      * @param args the command line arguments
      */
     @Override
-    public void  dayHello() {
-        ExecutorService executorRedSemaforica = Executors.newFixedThreadPool(30);
-        ArrayList semaforos = new ArrayList();
-
-        int c1;
-        int c2;
-        int c3;
-        Random r = new Random();
-        for (int i = 0; i < 10; i++) {
-            c1 = r.nextInt(10 - 1 + 1) + 1;
-            c2 = r.nextInt(10 - 1 + 1) + 1;
-            c3 = r.nextInt(10 - 1 + 1) + 1;
-//            Runnable controlador = new Interseccion(Integer.toString(i), false, c2, c1);
-//            executorRedSemaforica.execute (controlador);
-            Interseccion s = new Interseccion(Integer.toString(i), false, c1, c2, c3);
-            semaforos.add(s);
-            executorRedSemaforica.execute((Runnable) semaforos.get(i));
-        }
-        executorRedSemaforica.shutdown();
-        Interseccion aux;
-        while (true) {
-            System.out.println("");
-            System.out.println("");
-            System.out.println("");
-            for (int j = 0; j < 10; j++) {
-                aux = (Interseccion) semaforos.get(j);
-                System.out.println("Semaforo " + aux.getName() + "(" + aux.isB() + "):" + aux.getContador());
-            }
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(RedSemaforica.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
-    
-    public static void main(String[] args) {
-         try {
-            RedSemaforica obj = new RedSemaforica();
-            Interface stub = (Interface) UnicastRemoteObject.exportObject(obj, 0);
-            
-            // Bind the remote object's stub in the registry
-            Registry registry = LocateRegistry.getRegistry();
-            java.rmi.registry.LocateRegistry.createRegistry(1099);
-            registry.bind("Hello", stub);
-
-            System.err.println("Server ready");
-         } catch (Exception e) {
-            System.err.println("Server exception: " + e.toString());
-            e.printStackTrace();
-        }
-        //***********************************************************************************************
-//        
+    public void dayHello() {
 //        ExecutorService executorRedSemaforica = Executors.newFixedThreadPool(30);
-//        ArrayList semaforos = new ArrayList();
+//        intersecciones = new ArrayList();
 //
 //        int c1;
 //        int c2;
@@ -95,8 +46,8 @@ public class RedSemaforica implements Interface{
 ////            Runnable controlador = new Interseccion(Integer.toString(i), false, c2, c1);
 ////            executorRedSemaforica.execute (controlador);
 //            Interseccion s = new Interseccion(Integer.toString(i), false, c1, c2, c3);
-//            semaforos.add(s);
-//            executorRedSemaforica.execute((Runnable) semaforos.get(i));
+//            intersecciones.add(s);
+//            executorRedSemaforica.execute((Runnable) intersecciones.get(i));
 //        }
 //        executorRedSemaforica.shutdown();
 //        Interseccion aux;
@@ -105,9 +56,8 @@ public class RedSemaforica implements Interface{
 //            System.out.println("");
 //            System.out.println("");
 //            for (int j = 0; j < 10; j++) {
-//                aux = (Interseccion) semaforos.get(j);
+//                aux = (Interseccion) intersecciones.get(j);
 //                System.out.println("Semaforo " + aux.getName() + "(" + aux.isB() + "):" + aux.getContador());
-//
 //            }
 //            try {
 //                Thread.sleep(1000);
@@ -115,7 +65,64 @@ public class RedSemaforica implements Interface{
 //                Logger.getLogger(RedSemaforica.class.getName()).log(Level.SEVERE, null, ex);
 //            }
 //        }
+    }
+
+    public static void main(String[] args) {
+//         try {
+//            RedSemaforica obj = new RedSemaforica();
+//            Interface stub = (Interface) UnicastRemoteObject.exportObject(obj, 0);
+//            
+//            // Bind the remote object's stub in the registry
+//            Registry registry = LocateRegistry.getRegistry();
+//            java.rmi.registry.LocateRegistry.createRegistry(1099);
+//            registry.bind("Hello", stub);
+//
+//            System.err.println("Server ready");
+//         } catch (Exception e) {
+//            System.err.println("Server exception: " + e.toString());
+//            e.printStackTrace();
+//        }
+//        ***********************************************************************************************
+
+        ExecutorService executorRedSemaforica = Executors.newFixedThreadPool(numIntersecciones);
+        intersecciones = new ArrayList();
+        int c1;
+        int c2;
+        int c3;
+        Random r = new Random();
+        for (int i = 0; i < numIntersecciones; i++) {
+            c1 = r.nextInt(10 - 1 + 1) + 1;
+            c2 = r.nextInt(10 - 1 + 1) + 1;
+            c3 = r.nextInt(10 - 1 + 1) + 1;
+//            Runnable controlador = new Interseccion(Integer.toString(i), false, c2, c1);
+//            executorRedSemaforica.execute (controlador);
+            Interseccion s = new Interseccion(Integer.toString(i), false, c1, c2, c3);
+            intersecciones.add(s);
+            executorRedSemaforica.execute((Runnable) intersecciones.get(i));
+        }
+        executorRedSemaforica.shutdown();
+        ImpresionRedSemaforica();
+
 //***********************************************************************************************
+    }
+
+    public static void ImpresionRedSemaforica() {
+        Interseccion aux;
+        while (true) {
+            System.out.println("");
+            System.out.println("");
+            System.out.println("");
+            for (int j = 0; j < intersecciones.size(); j++) {
+                aux = (Interseccion) intersecciones.get(j);
+                System.out.println("Semaforo " + aux.getName() + "(" + aux.isB() + "):" + aux.getContador());
+
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(RedSemaforica.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
 }
