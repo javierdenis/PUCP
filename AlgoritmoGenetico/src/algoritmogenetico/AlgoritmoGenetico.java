@@ -85,10 +85,12 @@ public class AlgoritmoGenetico {
         return true;
     }
     public static void GenerarPoblacionInicial(){
-        
+        Indiv ind ;
+        for (int i=0; i<tamPoblacion; i++){
+            ind = new Indiv();
+            p.add(ind);
+        }
     }
-    
-    
     public static double CalcularIndiceRendimientoxIndividuo(Indiv ind){
         double suma=0;
         double valor=0;
@@ -103,7 +105,6 @@ public class AlgoritmoGenetico {
     public static Double  EvaluarInterseccion(Interseccion intersecccion){
         return FObjetivo(900, 10, 10, 200, 120,90);
     }
-    
     public static double FObjetivo(int q, int verde, int Ciclo_red, int S, int tao, int ciclo_semaforo) {
         double DU = q/ciclo_semaforo;//promedio de longitudes de cola en todos los intervalos;
         int Q = verde / Ciclo_red * S;
@@ -118,5 +119,4 @@ public class AlgoritmoGenetico {
             return -1;
         }
     }
-
 }
