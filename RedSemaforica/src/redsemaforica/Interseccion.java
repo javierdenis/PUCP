@@ -23,8 +23,10 @@ public class Interseccion implements Runnable {
     private int c1;
     private int c2;
     private int c3;
-    
     private int contador;
+    
+    private int q_EO, q_OE, q_NS, q_SN;
+    private int vm_EO, vm_OE, vm_NS, vm_SN;
 
     public Interseccion(String name, boolean estado, int c1, int c2, int c3) {
         this.name = name;
@@ -32,7 +34,11 @@ public class Interseccion implements Runnable {
         this.c1 = c1;
         this.c2 = c2;
         this.c3 = c3;
+        
+        this.q_EO = this.q_OE = this.q_NS = this.q_SN =100;
+        this.vm_EO= this.vm_OE= this.vm_NS= this.vm_SN=20;
     }
+
 
     @Override
     public void run() {
@@ -82,4 +88,78 @@ public class Interseccion implements Runnable {
     public void setContador(int contador) {
         this.contador = contador;
     }
+
+    public int getC3() {
+        return c3;
+    }
+
+    public void setC3(int c3) {
+        this.c3 = c3;
+    }
+
+    public int getQ_EO() {
+        return q_EO;
+    }
+
+    public void setQ_EO(int q_EO) {
+        this.q_EO = q_EO;
+    }
+
+    public int getQ_OE() {
+        return q_OE;
+    }
+
+    public void setQ_OE(int q_OE) {
+        this.q_OE = q_OE;
+    }
+
+    public int getQ_NS() {
+        return q_NS;
+    }
+
+    public void setQ_NS(int q_NS) {
+        this.q_NS = q_NS;
+    }
+
+    public int getQ_SN() {
+        return q_SN;
+    }
+
+    public void setQ_SN(int q_SN) {
+        this.q_SN = q_SN;
+    }
+
+    public int getVm_EO() {
+        return vm_EO;
+    }
+
+    public void setVm_EO(int vm_EO) {
+        this.vm_EO = vm_EO;
+    }
+
+    public int getVm_OE() {
+        return vm_OE;
+    }
+
+    public void setVm_OE(int vm_OE) {
+        this.vm_OE = vm_OE;
+    }
+
+    public int getVm_NS() {
+        return vm_NS;
+    }
+
+    public void setVm_NS(int vm_NS) {
+        this.vm_NS = vm_NS;
+    }
+
+    public int getVm_SN() {
+        return vm_SN;
+    }
+
+    public void setVm_SN(int vm_SN) {
+        this.vm_SN = vm_SN;
+    }
+    
+    
 }
