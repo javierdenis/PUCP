@@ -6,14 +6,15 @@
 package algoritmogenetico;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  *
  * @author javier
  */
 public class AlgoritmoGenetico {
-    static Integer numIntersecciones = 10;
-    static Integer tamPoblacion = 100; //que sea par->el porque esta en aqui1
+    static Integer numIntersecciones = 3;
+    static Integer tamPoblacion = 4; //que sea par->el porque esta en aqui1
     static ArrayList<Individuo> p = new ArrayList<Individuo>();
     static ArrayList<Individuo> np = new ArrayList<Individuo>();
     static ArrayList<Individuo> ps = new ArrayList<Individuo>();
@@ -21,10 +22,17 @@ public class AlgoritmoGenetico {
     static Individuo hija = new Individuo();
 
     
-    public static class Individuo{
-        int IR; //Indice de Rendimiento
-        ArrayList <Interseccion> intersecciones = new ArrayList<Interseccion>();
+
     
+    public static class Individuo{
+        double IR; //Indice de Rendimiento
+        ArrayList <Interseccion> intersecciones = new ArrayList<Interseccion>();
+        
+//        public Individuo (ArrayList intersecciones){
+//        }
+        public Individuo (){ //revisar si es posible crear un individuo nuevo sin interseccion
+            
+        }
     }
   
     
@@ -32,24 +40,54 @@ public class AlgoritmoGenetico {
     public static void main(String[] args) {
         
         /*p=*/GenerarPoblacionInicial();
-        for (int j=0; j<tamPoblacion;j++){
-            CalcularIndiceRendimientoxIndividuo(p.get(j)/*p*/);
-        }
+        /*ImprimirPoblacion(p);*/
         
+        for (int j=0; j<tamPoblacion;j++){
+            CalcularIndiceRendimientoxIndividuo(p.get(j)/*p*/); //Este calculo se esta haciendo de la poblacion inicial
+            System.out.println("Individuo "+j+" con IR: "+p.get(j).IR);
+        }
         while(EvaluarCondicionParada()){
             for (int i=0;i<tamPoblacion;i++){ //aqui1
-                Casamiento(p.get(i), p.get(tamPoblacion-i));
+                System.out.println("***********************************"+i);
+                hijo=new Individuo();
+                hija=new Individuo();
+                if (i<tamPoblacion/2)Casamiento(p.get(i), p.get(tamPoblacion-i-1));//Aqui el error esta en las parejitas
+                System.out.println("");
+                System.out.println("");
+                System.out.println("");
+                
                 //Casamiento(p[i],p[tamPoblacion-i]);
+                /*
                 MutacionDeHijos(0.3);
                 CalcularIndiceRendimientoxIndividuo(hijo);
                 CalcularIndiceRendimientoxIndividuo(hija);
                 np.add(hijo);
-                np.add(hija);
+                np.add(hija);*/
             }
             SeleccionMejoresIndividuoiduos();
 //            if (PoblacionConverge()){
 //            }
         }
+    }
+    
+    public static void ImprimirIndividuo(Individuo x){
+        
+        for (int i=0; i<x.intersecciones.size();i++){
+            Interseccion aux = x.intersecciones.get(i);
+            System.out.println("["+i+":"+"<"+aux.isB()+","+aux.getC1()+","+aux.getC2()+","+aux.getC3()+">] ");
+        }
+    }
+    
+    public static void ImprimirPoblacion(ArrayList<Individuo> poblacion){
+        System.out.println("POBLACION ================================");
+        for (int i=0 ; i<poblacion.size(); i++){
+            Individuo aux = poblacion.get(i);
+            System.out.print("IR : ("+aux.IR+") => ");
+            for (int j=0; j<aux.intersecciones.size(); j++){
+                System.out.println("Interseccion "+j+" with name = "+aux.intersecciones.get(j).getName());
+            }
+        }
+        System.out.println("==========================================");
     }
     public static void SeleccionMejoresIndividuoiduos(){
         ps=new ArrayList<Individuo>();
@@ -65,12 +103,24 @@ public class AlgoritmoGenetico {
         
     }
     public static void Casamiento(Individuo padre, Individuo madre){
-        /*ind_hijo=*/ObtenerIndividuo();
-        /*ind_hija=*/ObtenerIndividuo();
+        Random r = new Random(); 
+        int max=padre.intersecciones.size()-1;
+        int min=0;
+        int PuntoDeCorte= r.nextInt((max - min) + 1) + min;
+        for (int i=0; i<PuntoDeCorte; i++){
+            hijo.intersecciones.add(padre.intersecciones.get(i));
+            hija.intersecciones.add(madre.intersecciones.get(i));
+        }
+        for (int i=PuntoDeCorte; i<padre.intersecciones.size(); i++){
+            hijo.intersecciones.add(madre.intersecciones.get(i));
+            hija.intersecciones.add(padre.intersecciones.get(i));
+        }
+        System.out.println("PADRE ====");   ImprimirIndividuo(padre);
+        System.out.println("MADRE ====");   ImprimirIndividuo(madre);
+        System.out.println("HIJO  ====");   ImprimirIndividuo(hijo);
+        System.out.println("HIJA  ====");   ImprimirIndividuo(hija);
+        //*ind_hija=*/ObtenerIndividuo();
         //continuar con el casamiento;
-    }
-    public static void ObtenerIndividuo(){
-        
     }
     public static boolean EvaluarCondicionParada(){
         if (PoblacionConverge()&& true){
@@ -84,18 +134,39 @@ public class AlgoritmoGenetico {
     }
     public static void GenerarPoblacionInicial(){
         Individuo ind ;
+        Interseccion aux;
         for (int i=0; i<tamPoblacion; i++){
+            //RMI: Obtener datos de volumenes en cada interseccion
             ind = new Individuo();
+            ind.intersecciones = GenerarArregloDeInterseccionesFalsa();
+            double calculo=CalcularIndiceRendimientoxIndividuo(ind);
+            ind.IR=calculo;
             p.add(ind);
         }
+    }
+    private static ArrayList<Interseccion> GenerarArregloDeInterseccionesFalsa() {
+        ArrayList <Interseccion> rpta = new ArrayList<>();
+        for (int i=0; i<numIntersecciones; i++){
+            Interseccion x= new Interseccion("Interseccion "+i, true, 100, 100, 100);
+            x.setQ_EO(5);
+            x.setQ_NS(7);
+            x.setQ_OE(11);
+            x.setQ_SN(14);
+            
+            x.setVm_EO(6);
+            x.setVm_NS(8);
+            x.setVm_OE(12);
+            x.setVm_SN(15);
+            rpta.add(x);
+        }
+        return rpta;
     }
     public static double CalcularIndiceRendimientoxIndividuo(Individuo ind){
         double suma=0;
         double valor=0;
         //Evaluamos para cada interseccion INTERCALADA los datos que se obtienen alli
-        for (int i = 0; i < numIntersecciones; i++) {
+        for (int i = 0; i < numIntersecciones; i=i+2) {
             valor+=EvaluarInterseccion(ind.intersecciones.get(i));
-            System.out.println("Resultado FO = " + valor);
             suma+=valor;
         }
         return suma;
@@ -103,34 +174,34 @@ public class AlgoritmoGenetico {
     public static Double  EvaluarInterseccion(Interseccion intersecccion){
         double resultado=0;
         
-        resultado+=FObjetivo2(intersecccion, 200, 120,90);
+        resultado+=FObjetivo2(intersecccion, 60, 20,90);
         
         return resultado;
     }
+    /*
+    public static double FObjetivo(
+            int q, //flujo del arco
+            int verde_efectivo, 
+            int Ciclo_red, //dato fijo
+            int S, //flujo saturacion, dato fijo
+            int tao,//periodo de análisis 10-15-30 minutos
+            int ciclo_semaforo) 
+    {
+        double DU = q/ciclo_semaforo;//promedio de longitudes de cola en todos los intervalos;
+        int Q = verde_efectivo / Ciclo_red * S;
+        int x = q / Q;
+        double x0 = 0.67 + (S * verde_efectivo) / 600;
+        double N = Q * tao / 4;
+
+        if (x > x0) {
+            N = N * ((x - 1) + Math.sqrt(Math.pow(x - 1, 2) + (12 * (x - x0)) / (Q * tao)));
+            return N;
+        } else {
+            return -1;
+        }
+    }
     
-//    public static double FObjetivo(
-//            int q, /*flujo del arco*/
-//            int verde_efectivo, 
-//            int Ciclo_red /*dato fijo*/, 
-//            int S/*flujo saturacion, dato fijo*/,
-//            int tao,/*periodo de análisis 10-15-30 minutos*/ 
-//            int ciclo_semaforo) 
-//    {
-//        double DU = q/ciclo_semaforo;//promedio de longitudes de cola en todos los intervalos;
-//        int Q = verde_efectivo / Ciclo_red * S;
-//        int x = q / Q;
-//        double x0 = 0.67 + (S * verde_efectivo) / 600;
-//        double N = Q * tao / 4;
-//
-//        if (x > x0) {
-//            N = N * ((x - 1) + Math.sqrt(Math.pow(x - 1, 2) + (12 * (x - x0)) / (Q * tao)));
-//            return N;
-//        } else {
-//            return -1;
-//        }
-//    }
-    
-    
+    */
     public static double FObjetivo2(
             Interseccion i,
             int Ciclo_red /*dato fijo*/, 
@@ -147,14 +218,15 @@ public class AlgoritmoGenetico {
         verde_efectivo=i.isB()?i.getC2():i.getC1()+i.getC3();
         
         double DU = q/ciclo_semaforo;//promedio de longitudes de cola en todos los intervalos;
-        int Q = verde_efectivo / Ciclo_red * S;
-        int x = q / Q;
+        double Q = verde_efectivo / (Ciclo_red * S);
+        double x = q / Q;
         double x0 = 0.67 + (S * verde_efectivo) / 600;
         double N = Q * tao / 4;
 
         if (x > x0) {
             N = N * ((x - 1) + Math.sqrt(Math.pow(x - 1, 2) + (12 * (x - x0)) / (Q * tao)));
-            return N;
+            return 100;
+            //return N;
         } else {
             return -1;
         }
