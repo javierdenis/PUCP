@@ -13,8 +13,8 @@ import java.util.Random;
  * @author javier
  */
 public class AlgoritmoGenetico {
-    static Integer numIntersecciones = 3;
-    static Integer tamPoblacion = 4; //que sea par->el porque esta en aqui1
+    static Integer numIntersecciones = 5;
+    static Integer tamPoblacion = 5; //que sea par->el porque esta en aqui1
     static ArrayList<Individuo> p = new ArrayList<Individuo>();
     static ArrayList<Individuo> np = new ArrayList<Individuo>();
     static ArrayList<Individuo> ps = new ArrayList<Individuo>();
@@ -63,10 +63,12 @@ public class AlgoritmoGenetico {
                 CalcularIndiceRendimientoxIndividuo(hija);
                 np.add(hijo);
                 np.add(hija);*/
+                
             }
-            SeleccionMejoresIndividuoiduos();
+            /*SeleccionMejoresIndividuoiduos();*/
 //            if (PoblacionConverge()){
 //            }
+            break;
         }
     }
     
@@ -74,7 +76,9 @@ public class AlgoritmoGenetico {
         
         for (int i=0; i<x.intersecciones.size();i++){
             Interseccion aux = x.intersecciones.get(i);
-            System.out.println("["+i+":"+"<"+aux.isB()+","+aux.getC1()+","+aux.getC2()+","+aux.getC3()+">] ");
+            //System.out.println("["+i+":"+"<"+aux.isB()+","+aux.getC1()+","+aux.getC2()+","+aux.getC3()+">] ");
+            //System.out.println("["+i+":"+"<"+aux.isB()+","+aux.getQ_EO()+","+aux.getQ_NS()+","+aux.getQ_OE()+","+aux.getQ_SN()+">] ");
+            System.out.println("["+i+":"+"<"+aux.getName()+">] ");
         }
     }
     
@@ -103,10 +107,17 @@ public class AlgoritmoGenetico {
         
     }
     public static void Casamiento(Individuo padre, Individuo madre){
+        /**********************************/
+        for (int i=0; i<padre.intersecciones.size(); i++){
+            padre.intersecciones.get(i).setName("P"+i);
+            madre.intersecciones.get(i).setName("M"+i);
+        }
+        /**********************************/    
         Random r = new Random(); 
         int max=padre.intersecciones.size()-1;
         int min=0;
         int PuntoDeCorte= r.nextInt((max - min) + 1) + min;
+        System.out.println("Punto de corte = "+PuntoDeCorte);
         for (int i=0; i<PuntoDeCorte; i++){
             hijo.intersecciones.add(padre.intersecciones.get(i));
             hija.intersecciones.add(madre.intersecciones.get(i));
