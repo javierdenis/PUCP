@@ -25,7 +25,8 @@ public class Interseccion implements Runnable {
     private int c3;
     private int contador;
     
-    private int q_EO, q_OE, q_NS, q_SN;
+    private int  q_OE, q_NS, q_SN;
+    private double q_EO;
     private int vm_EO, vm_OE, vm_NS, vm_SN;
 
     public Interseccion(String name, boolean estado, int c1, int c2, int c3) {
@@ -97,11 +98,11 @@ public class Interseccion implements Runnable {
         this.c3 = c3;
     }
 
-    public int getQ_EO() {
+    public double getQ_EO() {
         return q_EO;
     }
 
-    public void setQ_EO(int q_EO) {
+    public void setQ_EO(double q_EO) {
         this.q_EO = q_EO;
     }
 

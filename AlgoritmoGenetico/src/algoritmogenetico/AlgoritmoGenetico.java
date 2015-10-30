@@ -14,8 +14,8 @@ import java.util.Random;
  */
 public class AlgoritmoGenetico {
 
-    static Integer numIntersecciones = 5;
-    static Integer tamPoblacion = 8; //que sea par->el porque esta en aqui1
+    static Integer numIntersecciones = 15;
+    static Integer tamPoblacion =5000; //que sea par->el porque esta en aqui1
     static ArrayList<Individuo> p = new ArrayList<Individuo>();
     static ArrayList<Individuo> np = new ArrayList<Individuo>();
     static ArrayList<Individuo> ps = new ArrayList<Individuo>();
@@ -51,10 +51,18 @@ public class AlgoritmoGenetico {
     }
 
     public static void CalcularIRNuevaPoblacion() {
+        double MINIMO= 100000;
+        Individuo optimo= new Individuo(); 
         for (int j = 0; j < tamPoblacion; j++) {
             np.get(j).IR = CalcularIndiceRendimientoxIndividuo(np.get(j)/*p*/); //Este calculo se esta haciendo de la poblacion inicial
             System.out.println("Nuevo individuo " + j + " con IR: " + np.get(j).IR);
+            if (np.get(j).IR>0 && np.get(j).IR<= MINIMO) {
+                MINIMO = np.get(j).IR; 
+                optimo = np.get(j);
+            }
         }
+        System.out.println("Minimo de minimos = "+MINIMO);
+        ImprimirIndividuo(optimo);
     }
 
     public static void ImprimirIndividuo(Individuo x) {
@@ -63,7 +71,7 @@ public class AlgoritmoGenetico {
             Interseccion aux = x.intersecciones.get(i);
             //System.out.println("["+i+":"+"<"+aux.isB()+","+aux.getC1()+","+aux.getC2()+","+aux.getC3()+">] ");
             //System.out.println("["+i+":"+"<"+aux.isB()+","+aux.getQ_EO()+","+aux.getQ_NS()+","+aux.getQ_OE()+","+aux.getQ_SN()+">] ");
-            System.out.println("[" + i + ":" + "<" + aux.getName() + ">] ");
+            System.out.println("[" + i + ":" + "<" + aux.getName() + ","+aux.getC2()+">] ");
         }
     }
 
@@ -207,18 +215,19 @@ public class AlgoritmoGenetico {
     private static ArrayList<Interseccion> GenerarArregloDeInterseccionesFalsa() {
         ArrayList<Interseccion> rpta = new ArrayList<>();
         Random r = new Random();
-        int max = 300; //TIEMPO MÁXIMO VERDE
+        int max = 180; //TIEMPO MÁXIMO VERDE
         int min = 10;  //TIEMPO MINIMO COLOR
         int tiempoCiclo,c1,c2,c3;
         for (int i = 0; i < numIntersecciones; i++) {
             c1=r.nextInt((max - min) + 1) + min;
             c2=r.nextInt((max - min) + 1) + min;
+            //c2=28;
             c3=r.nextInt((max - min) + 1) + min;
 
             Interseccion x = new Interseccion("Interseccion " + i, true, c1,c2,c3);
-            x.setQ_EO(5);
+            x.setQ_EO(0.167);
             x.setQ_NS(7);
-            x.setQ_OE(11);
+            x.setQ_OE(150);
             x.setQ_SN(14);
 
             x.setVm_EO(6);
@@ -244,7 +253,8 @@ public class AlgoritmoGenetico {
     public static Double EvaluarInterseccion(Interseccion intersecccion) {
         double resultado = 0;
 
-        resultado += FObjetivo2(intersecccion, 60, 20, 900);
+        //resultado += FObjetivo2(intersecccion, C, S , Tao);
+        resultado += FObjetivo2(intersecccion, 60, 0.5 , 720);
 
         return resultado;
     }
@@ -276,26 +286,33 @@ public class AlgoritmoGenetico {
     public static double FObjetivo2(
             Interseccion i,
             int Ciclo_red /*dato fijo*/,
-            int S/*flujo saturacion, dato fijo*/,
+            double S/*flujo saturacion, dato fijo*/,
             int tao/*periodo de análisis 10-15-30 minutos*/
     ) {
 
         //ESTO SOLO SIRVE PARA EVALUAR UNA AVENIDA QUE ENTRA A LA INTERSECCION
         //FALTA EVALUAR EL OTRO SENTIDO;
-        int q = i.getQ_EO();
+        double q = i.getQ_EO();
         int ciclo_semaforo = i.getC1() + i.getC2() + i.getC3();
         int verde_efectivo;
         verde_efectivo = i.isB() ? i.getC2() : i.getC1() + i.getC3();
+        
 
         double DU = q / ciclo_semaforo;//promedio de longitudes de cola en todos los intervalos;
-        double Q = verde_efectivo / (Ciclo_red * S);
+        double Q = (verde_efectivo * S)/ Ciclo_red ;
         double x = q / Q;
-        double x0 = 0.67 + (S * verde_efectivo) / 600;
+        double x0 = 0.67 + ((S * verde_efectivo) / 600);
         double N = Q * tao / 4;
+        System.out.println("VE ="+verde_efectivo);
+        /*System.out.println("DU ="+DU);
+        System.out.println("Q  ="+Q);
+        System.out.println("x  ="+x);
+        System.out.println("x0 ="+x0);
+        */
 
         if (x > x0) {
             N = N * ((x - 1) + Math.sqrt(Math.pow(x - 1, 2) + (12 * (x - x0)) / (Q * tao)));
-            return i.getC2();
+            return N;//i.getC2();
             //return N;
         } else {
             return -1;
