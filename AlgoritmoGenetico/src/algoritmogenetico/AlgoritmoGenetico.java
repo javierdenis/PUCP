@@ -14,8 +14,8 @@ import java.util.Random;
  */
 public class AlgoritmoGenetico {
 
-    static Integer numIntersecciones = 15;
-    static Integer tamPoblacion =5000; //que sea par->el porque esta en aqui1
+    static Integer numIntersecciones = 10;
+    static Integer tamPoblacion = 50; //que sea par->el porque esta en aqui1
     static ArrayList<Individuo> p = new ArrayList<Individuo>();
     static ArrayList<Individuo> np = new ArrayList<Individuo>();
     static ArrayList<Individuo> ps = new ArrayList<Individuo>();
@@ -41,6 +41,7 @@ public class AlgoritmoGenetico {
             Casamiento(); //FUNCIONA CORRECTAMENTE
             MutacionDeHijos(0.5); //FALTA DEFINIR QUÉ VA A MUTAR!
             CalcularIRNuevaPoblacion();
+            SeleccionMejoresIndividuos();
             break;
         }
         /*SeleccionMejoresIndividuoiduos();*/
@@ -51,17 +52,17 @@ public class AlgoritmoGenetico {
     }
 
     public static void CalcularIRNuevaPoblacion() {
-        double MINIMO= 100000;
-        Individuo optimo= new Individuo(); 
+        double MINIMO = 100000;
+        Individuo optimo = new Individuo();
         for (int j = 0; j < tamPoblacion; j++) {
             np.get(j).IR = CalcularIndiceRendimientoxIndividuo(np.get(j)/*p*/); //Este calculo se esta haciendo de la poblacion inicial
             System.out.println("Nuevo individuo " + j + " con IR: " + np.get(j).IR);
-            if (np.get(j).IR>0 && np.get(j).IR<= MINIMO) {
-                MINIMO = np.get(j).IR; 
+            if (np.get(j).IR > 0 && np.get(j).IR <= MINIMO) {
+                MINIMO = np.get(j).IR;
                 optimo = np.get(j);
             }
         }
-        System.out.println("Minimo de minimos = "+MINIMO);
+        System.out.println("Minimo de minimos = " + MINIMO);
         ImprimirIndividuo(optimo);
     }
 
@@ -71,7 +72,7 @@ public class AlgoritmoGenetico {
             Interseccion aux = x.intersecciones.get(i);
             //System.out.println("["+i+":"+"<"+aux.isB()+","+aux.getC1()+","+aux.getC2()+","+aux.getC3()+">] ");
             //System.out.println("["+i+":"+"<"+aux.isB()+","+aux.getQ_EO()+","+aux.getQ_NS()+","+aux.getQ_OE()+","+aux.getQ_SN()+">] ");
-            System.out.println("[" + i + ":" + "<" + aux.getName() + ","+aux.getC2()+">] ");
+            System.out.println("[" + i + ":" + "<" + aux.getName() + "," + aux.getC2() + ">] ");
         }
     }
 
@@ -87,15 +88,28 @@ public class AlgoritmoGenetico {
         System.out.println("==========================================");
     }
 
-    public static void SeleccionMejoresIndividuoiduos() {
-        ps = new ArrayList<Individuo>();
+    public static void SeleccionMejoresIndividuos() {
         for (int i = 0; i < tamPoblacion; i++) {
-            if (p.get(i).IR <= np.get(i).IR) {
-                ps.add(p.get(i));
+            if (p.get(i).IR < 0) {
+                if (np.get(i).IR > 0) {
+                    ps.add(np.get(i));
+                } else {
+                    ps.add(np.get(i)); // cualquiera en realidad
+                }
             } else {
-                ps.add(np.get(i));
+                if (np.get(i).IR > 0) {
+                    if (p.get(i).IR <= np.get(i).IR) {
+                        ps.add(p.get(i));
+                    } else {
+                        ps.add(np.get(i));
+                    }
+                } else{
+                    ps.add(p.get(i));
+                }
             }
         }
+        p = new ArrayList<>();
+        p=ps;
     }
 
     public static void MutacionDeHijos(double probabilidad) {
@@ -217,14 +231,15 @@ public class AlgoritmoGenetico {
         Random r = new Random();
         int max = 180; //TIEMPO MÁXIMO VERDE
         int min = 10;  //TIEMPO MINIMO COLOR
-        int tiempoCiclo,c1,c2,c3;
+        int tiempoCiclo, c1, c2, c3;
         for (int i = 0; i < numIntersecciones; i++) {
-            c1=r.nextInt((max - min) + 1) + min;
-            c2=r.nextInt((max - min) + 1) + min;
+            c1 = r.nextInt((max - min) + 1) + min;
+            c2 = r.nextInt((max - min) + 1) + min;
+            //c2=50;
             //c2=28;
-            c3=r.nextInt((max - min) + 1) + min;
+            c3 = r.nextInt((max - min) + 1) + min;
 
-            Interseccion x = new Interseccion("Interseccion " + i, true, c1,c2,c3);
+            Interseccion x = new Interseccion("Interseccion " + i, true, c1, c2, c3);
             x.setQ_EO(0.167);
             x.setQ_NS(7);
             x.setQ_OE(150);
@@ -254,7 +269,7 @@ public class AlgoritmoGenetico {
         double resultado = 0;
 
         //resultado += FObjetivo2(intersecccion, C, S , Tao);
-        resultado += FObjetivo2(intersecccion, 60, 0.5 , 720);
+        resultado += FObjetivo2(intersecccion, 60, 0.5, 720);
 
         return resultado;
     }
@@ -296,19 +311,18 @@ public class AlgoritmoGenetico {
         int ciclo_semaforo = i.getC1() + i.getC2() + i.getC3();
         int verde_efectivo;
         verde_efectivo = i.isB() ? i.getC2() : i.getC1() + i.getC3();
-        
 
         double DU = q / ciclo_semaforo;//promedio de longitudes de cola en todos los intervalos;
-        double Q = (verde_efectivo * S)/ Ciclo_red ;
+        double Q = (verde_efectivo * S) / Ciclo_red;
         double x = q / Q;
         double x0 = 0.67 + ((S * verde_efectivo) / 600);
         double N = Q * tao / 4;
-        System.out.println("VE ="+verde_efectivo);
+        System.out.println("VE =" + verde_efectivo);
         /*System.out.println("DU ="+DU);
-        System.out.println("Q  ="+Q);
-        System.out.println("x  ="+x);
-        System.out.println("x0 ="+x0);
-        */
+         System.out.println("Q  ="+Q);
+         System.out.println("x  ="+x);
+         System.out.println("x0 ="+x0);
+         */
 
         if (x > x0) {
             N = N * ((x - 1) + Math.sqrt(Math.pow(x - 1, 2) + (12 * (x - x0)) / (Q * tao)));
