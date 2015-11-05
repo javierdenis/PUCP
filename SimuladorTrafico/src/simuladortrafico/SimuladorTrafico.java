@@ -66,7 +66,6 @@ public class SimuladorTrafico {
         String respuesta = año + "." + (mes + 1) + "." + dia + "." + hora + "." + minuto + "." + segundo;
         return respuesta;
     }
-    
     public static String GetFecha() {
         Calendar fecha = new GregorianCalendar();
         int año = fecha.get(Calendar.YEAR);
