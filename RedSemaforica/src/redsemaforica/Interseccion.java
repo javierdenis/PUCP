@@ -5,6 +5,7 @@
  */
 package redsemaforica;
 
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,18 +14,17 @@ import java.util.logging.Logger;
  * @author javier
  */
 public class Interseccion implements Runnable {
-    
+
     //La duracion del primer color sera = c1+c3;
     //La duracion del segundo color sera = c2;
     //La duracion total del ciclo sera = c1+c2+c3+2*IGP(3segundos)
-
     private String name;
     private boolean b; // PRIMER COLOR: La interseccion inicia en verde = 1 orojo =0 para la vía principal
     private int c1;
     private int c2;
     private int c3;
     private int contador;
-    
+
     private int q_EO, q_OE, q_NS, q_SN;
     private int vm_EO, vm_OE, vm_NS, vm_SN;
 
@@ -34,11 +34,9 @@ public class Interseccion implements Runnable {
         this.c1 = c1;
         this.c2 = c2;
         this.c3 = c3;
-        
-        this.q_EO = this.q_OE = this.q_NS = this.q_SN =100;
-        this.vm_EO= this.vm_OE= this.vm_NS= this.vm_SN=20;
+        this.q_EO = this.q_OE = this.q_NS = this.q_SN = 100;
+        this.vm_EO = this.vm_OE = this.vm_NS = this.vm_SN = 20;
     }
-
 
     @Override
     public void run() {
@@ -46,6 +44,7 @@ public class Interseccion implements Runnable {
             contador = b ? c2 : c1;
             while (contador >= 0) {
                 contador--;
+                ActualizarFlujos();
                 try {
                     Thread.sleep(1000); //duerme un segundo
                 } catch (InterruptedException ex) {
@@ -53,38 +52,55 @@ public class Interseccion implements Runnable {
                 }
 
             }
-            b=!b;
+            b = !b;
         }
 
+    }
+
+    public void ActualizarFlujos() {
+        Random r = new Random();
+        int max = 10;
+        int min = 0;
+        int nAutos = r.nextInt((max - min) + 1) + min;
+        q_EO = q_OE = q_NS = q_SN =q_EO+nAutos;
     }
 
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
+
     public boolean isB() {
         return b;
     }
+
     public void setB(boolean b) {
         this.b = b;
     }
+
     public int getC1() {
         return c1;
     }
+
     public void setC1(int c1) {
         this.c1 = c1;
     }
+
     public int getC2() {
         return c2;
     }
+
     public void setC2(int c2) {
         this.c2 = c2;
     }
+
     public int getContador() {
         return contador;
     }
+
     public void setContador(int contador) {
         this.contador = contador;
     }
@@ -160,6 +176,5 @@ public class Interseccion implements Runnable {
     public void setVm_SN(int vm_SN) {
         this.vm_SN = vm_SN;
     }
-    
-    
+
 }
